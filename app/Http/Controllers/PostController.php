@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+
+
+    public function __construct(){
+        $this->middleware('auth')->except(['index','show']);
+    }
+
+    
     /**
      * Display a listing of the resource.
      *
@@ -74,6 +81,8 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         //
+        return view('posts.edit',compact('post'));
+
     }
 
     /**
@@ -86,6 +95,11 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         //
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->save();
+        session()->flash('message','Your Post has been updated successfully');
+        return redirect()->back();
     }
 
     /**
@@ -97,5 +111,8 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+        $post->delete();
+
+        return redirect(route('posts.index'));
     }
 }
